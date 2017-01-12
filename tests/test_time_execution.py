@@ -8,7 +8,7 @@ import pytest
 
 from snowden import SnowdenSolver
 
-MAX_LENGTH = 5000
+MAX_LENGTH = 1000000
 INSERTED_LENGTH = 2
 NUMBER_OF_INSERTED_CHAR_PAIRS = 500
 
@@ -52,6 +52,7 @@ def worst_case_string():
         i += 1
     half_str = "".join(s)
     reversed_str = half_str[::-1]
+
     return half_str + reversed_str
 
 
