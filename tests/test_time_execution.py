@@ -1,13 +1,14 @@
 import random
 import string
 import time
+import itertools
 
 from six.moves import range
 import pytest
 
 from snowden import SnowdenSolver
 
-MAX_LENGTH = 10000000
+MAX_LENGTH = 5000
 INSERTED_LENGTH = 2
 NUMBER_OF_INSERTED_CHAR_PAIRS = 500
 
@@ -38,10 +39,38 @@ def max_len_string():
     return "".join(s)
 
 
+@pytest.fixture()
+def worst_case_string():
+    # Worst case scenario is palindrome of non-consequentially
+    # repeated characters
+    half_size = MAX_LENGTH // 2
+    s = []
+    cycled = itertools.cycle(string.ascii_lowercase)
+    i = 0
+    while i < half_size:
+        s.append(next(cycled))
+        i += 1
+    half_str = "".join(s)
+    reversed_str = half_str[::-1]
+    return half_str + reversed_str
+
+
 def test_long_string_is_processed_fast(max_len_string):
     solver = SnowdenSolver()
     start_time = time.time()
     solver.solve(max_len_string)
     stop_time = time.time()
 
-    assert stop_time - start_time < MAX_TEST_DURATION_SECONDS
+    test_duration = stop_time - start_time
+    assert test_duration < MAX_TEST_DURATION_SECONDS
+
+
+def test_worst_case_scenario_is_processed_fast(worst_case_string):
+    solver = SnowdenSolver()
+    start_time = time.time()
+    solver.solve(worst_case_string)
+    stop_time = time.time()
+
+    test_duration = stop_time - start_time
+    print(test_duration)
+    assert test_duration < MAX_TEST_DURATION_SECONDS
